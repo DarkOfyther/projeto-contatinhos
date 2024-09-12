@@ -1,6 +1,6 @@
-import { SectionList, View, Alert, SectionListData } from "react-native"
+import { SectionList, View, Alert, Text} from "react-native"
 import { Feather } from '@expo/vector-icons'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useId } from 'react'
 import { styles } from './styles'
 import * as Contacts from 'expo-contacts'
 import { Input } from "@/app/components/input"
@@ -13,6 +13,7 @@ type SectionListDataProps = {
 }
 
 export function Home(){
+    const [name, setName] = useState("")
     const [contacts, setContacts] = useState<SectionListDataProps[]>([])
 
 
@@ -21,7 +22,10 @@ export function Home(){
         try {
             const { status } = await Contacts.requestPermissionsAsync()
             if (status === Contacts.PermissionStatus.GRANTED){
-                const { data } = await Contacts.getContactsAsync()
+                const { data } = await Contacts.getContactsAsync({
+                    name, // forma curta (short sintax) de 'name: "name"'
+                    sort:"firstName",
+                })
                 const list = data.map((contact) => ({
                     id: contact.id ?? useId(),
                     name: contact.name,
@@ -48,7 +52,7 @@ export function Home(){
     } 
     useEffect(() => {
         fetchContacts()
-    },[])
+    },[name])
 
     return (
 
@@ -60,7 +64,7 @@ export function Home(){
                     <Input.Field 
                     placeholder="Pesquisar pelo nome..." onChangeText={setName} value={name}
                     />
-                    <Feather name="x" size={16}color={theme.colors.gray_300} 
+                    <Feather name="x" size={16} color={theme.colors.gray_300} 
                     onPress={() => setName("")}>
                     </Feather>
                 </Input>
@@ -74,7 +78,9 @@ export function Home(){
         )}
         renderSectionHeader={({ section }) =>
              (<Text style={styles.section}>{section.title}</Text>)}
-          contentContainerStyle = {styles.contentList}  
+          contentContainerStyle = {styles.contentList}
+          showsVerticalScrollIndicator={false}
+          SectionSeparatorComponent={() => <View style={styles.separator}/>}  
         />
         </View>
     )

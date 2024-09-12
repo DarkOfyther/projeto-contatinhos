@@ -28,4 +28,15 @@ export const styles = StyleSheet.create({
         textAlignVertical: "center",
         borderRadius: 12,
     },
+    contentList: {
+        padding: 24,
+        gap: 12,
+        paddingTop: 64,
+    },
+    separator: {
+        width: "100%",
+        height: 1,
+        backgroundColor: theme.colors.gray_300,
+        margin: 12,
+    },
 })
